@@ -1,0 +1,17 @@
+Kitty Tyree
+My plan for using Kali is as follows:
+I have downloaded the Carleton
+REMOTELAB software which I have
+tested by using it for this assignment
+(since the terminal on my personal Mac
+was not working for some reason). And,
+because i am on campus, I will be utilizing
+the Olin labs. I will not be downloading
+Kali onto my personal Mac.
+
+My only concern is that my terminal window
+does not work, I asked multiple people and
+even went to the Lab Assistant and still
+nothing has worked. My final test was
+updating my computer software, but that
+did nothing.
