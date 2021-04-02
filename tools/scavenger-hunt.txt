@@ -1,0 +1,59 @@
+Kitty Tyree - A network tools scavenger hunt
+
+I am using a Mac, these answers are for Mac
+
+1. My computer's IP address for its current Internet connection is 137.22.177.73.
+   I found this by using the command     curl ifconfig.me      
+
+2. You can determing the IP address associated with a given host name by pinging
+   it in your unix system. Open the system, type    ping HOSTNAME    where
+   HOSTNAME is the name of the host. So for example, ping cs.carleton.edu   ,
+   gives "64 bytes from 137.22.5.8 ....."  and 137.22.5.8 is the IP address
+   associated with the host name.
+
+3. One way that I found to find the host name associated with a given IP
+   address is to use the   host IP   command in my Unix system. However, according
+   to the comments, this won't work if "DNS isn't set up properly". However,
+   mine seems to be set up, so doing the command     host   137.22.5.8    
+   gave me that the host was  " blue.mathcs.carleton.edu"
+
+4. The question: How can you copy a file from one computer to another?
+   Or more to the point, if you create a file on the Kali virtual machine and 
+   you want to put it someplace where you can save it, how do you go about it
+   from the Kali command-line interface?
+
+   The answer: I'm not entirely sure. From my googlings, it seems like I have to 
+   use the scp command, but I am not quite sure how to get it to actually work...
+   I also tried to explore setting up a shared folder between Virtual box and the
+   desktop outside the virtual machine, but I was getting errors when I tried to 
+   use    cp filename newFilename        and     mv filename sharedFolderLocation
+   so! I was unsuccessful and would love to learn how to answer this question as
+   I am still very unfamiliar with Kali.
+
+5. Apparently, to find a process listening on a given port, you can use the lsof
+   command, and then to find the listening, type   lsof -i :[PORTNUMBER]  
+   I was prepared to test this, but the three commands given to download it did not
+   work on my computer... thus I am going to take the word of this website and assume
+   that it works. *** it has come to my attention that I have lsof already and the
+   above command says nothing for some ports, but I am assuming that means nothing
+   is listening.
+   I also found that you could use    sudo netstat -tnlp | grep :[PORTNUMBER] 
+   which did work for me and gave me a bunch of stuff that I don't know how to read-
+   but! if the output is empty, it means that nothing is listening on that port.
+
+6. I found that using 	sudo lsof -i -P -n | grep LISTEN	gives me a whole bunch of
+   things which is apparently a list of all open ports. However, I am rethinking question
+   5 as doing    lsof -i:77    which according to this command should give something back
+   does not...
+
+7. To retrieve and save a given web page in a file on my system, I have found that 
+   curl     works nicely. So! the command would be 	curl http://THE_URL --output  filename.file
+   So, for example I did    curl https://cs.carleton.edu/faculty/jondich/courses/cs231_s21/documents/ethics.html --output practiceCurl.file
+   and then    cat practiceCurl.file      gave me the ethics page in my terminal window.
+
+8. To view the HTTP headers sent from a specified web server, you can use    curl --verbose URL
+   And they will all be nicely written out at the top of the output.
+
+9. I think adding the tag -i to curl --verbose URL will do it? I'm not entirely sure?
+   The only effect I saw in the headers is that some of them were bolded but that's what I got
+   from looking at the curl manual.
