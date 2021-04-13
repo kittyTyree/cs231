@@ -1,0 +1,121 @@
+Kitty Tyree
+
+Being Eve during a Diffie Hellman exchange.
+
+My approach to figuring out the secret between
+Bob and Alice was to first find Alice's secret
+number 'a'. Becuase Alice had sent Bob the number
+46, then we know by way of how Diffie Hellman works
+that 46 = (17^a) mod 61. So, I decided to try and find
+for which a was this equation going to be true. I opened
+a terminal and did my calculations in python, starting
+with a=0 and working my way up (a=1, a=2,...) until I found
+that a=14 makes this expression true. By finding Alice's 
+secret number, it is then possible to figure out what the 
+shared key between them would be by doing the following equation:
+	(5^14) mod 61
+which yields 12.
+Just to be sure, I also went in and found Bob's key, in this case
+trying to find a b such that  5 = (17^b) mod 61 , which I found
+to be 26. Thus, if I was correct,
+	(46^26) mod 61
+should equal 12, and sure enough it did. Thus, the secret key
+between Bob and Alice is 12, and I, Eve can listen in on all their 
+secrets now that I have their key.
+
+Because I took this route of testing each possible integer that could
+be Alice's secret key, it took two or three minutes, but becuase
+I only needed to try each integer 2-60,I knew that there could only
+be so many options. Once I reached 14, I could have stopped then
+and there (I didn't and checked to make sure 14 was the only option,
+but I am pretty sure that I could have stopped) which would have only
+taken me 13 tries. However, if p were a fairly large prime, then in the
+worst case, I would have to try p-1 different possibile numbers before
+I could find Alice's secret number. Clearly this is inefficient and I
+would not be able to do it by hand in a reasonable amount of time.
+
+
+Being Eve during RSA
+
+My approach to getting the secret between Bob and Alice when they use
+RSA is as follows. First up, I started with Bob's public key and set 
+off to find   p and q  . I knew that both p and q had to be primes
+larger than e (31) so I went to find the factors of 4661 that are primes
+over 31. Instead of just going through the factors, I went through a
+list of prime numbers and found which ones were factors of 4661. This
+only took a few tries since there are only 6 primes between 31 and
+one of the factors:   59.  Since the paired factor with 59 was 79,
+and happened to also be prime, I knew that I had found p and q.
+
+So, having found p and q (59 and 79), I now needed to find d.
+Originally, I was going manually, plugging in numbers to the
+equation
+	(31*d) mod (59-1)(79-1) = 1
+But, this was taking forever and it was driving me crazy (even going by 10s!)
+So, I looked for another approach. I ended up creating a while loop in
+python to do the computations for me. This is my loop:
+
+>>> def findD():
+	t = 0
+	i = 0
+	while t==0:
+		r = (31*i)%((59-1)(79-1))
+		if r==1:
+			print(i)
+			t = 1
+		else:
+			i += 1
+>>>
+
+Running this program gave me a value of   d = 2335  , which sure enough
+will solve the equation and give a value of  1.
+
+Now, I have Bob's private key	(2335,4661)  so I can decrypt his 
+message from Alice. 
+
+In order to do this, I wrote myself a little decryption program in python:
+
+aliceMessage = [2677, 4254, 1152, 4645, 4227, 1583, 2252, 426, 3492, 4227,
+ 3889, 1789, 4254, 1704, 1301, 4227, 1420, 1789, 1821, 1466, 4227, 2252,
+ 3303, 1420, 2234, 4227, 4227, 1789, 1420, 1420, 4402, 1466, 4070, 3278,
+ 3278, 414, 414, 414, 2234, 1466, 1704, 1789, 2955, 4254, 1821, 4254, 4645,
+ 2234, 1704, 2252, 3282, 3278, 426, 2991, 2252, 1604, 3278, 1152, 4645, 1704,
+ 1789, 1821, 4484, 4254, 1466, 3278, 1512, 3602, 1221, 1872, 3278, 1221,
+ 1512, 3278, 4254, 1435, 3282, 1152, 1821, 2991, 1945, 1420, 4645, 1152,
+ 1704, 1301, 1821, 2955, 1604, 1945, 1221, 2234, 1789, 1420, 3282, 2991,
+ 4227, 4410, 1821, 1301, 4254, 1466, 3454, 4227, 4410, 2252, 3303, 4645,
+ 4227, 3815, 4645, 1821, 4254, 2955, 2566, 3492, 4227, 3563, 2991, 1821,
+ 1704, 4254]
+
+def decrypt(ciphertext):
+	plaintext = []
+	for num in ciphertext:
+		char = (num**2335)%(4661)
+		plaintext.append(char)
+	return(plaintext)
+
+def turnToLetters(plaintext):
+	message = ""
+	for i in range(len(plaintext)):
+		number = plaintext[i]
+		charRep = chr(number)
+		message = message + charRep
+	print(message)
+
+deff main():
+	turnToLetters(decrypt(aliceMessage))
+
+Which gave the following result:
+"Dear Bob, Check this out. 
+ https://www.schneier.com/blog/archives/2017/12/e-mail_tracking_1.html Yikes!
+ Your friend, Alice"
+
+
+While I did manage to decrypt Alice's message to Bob, had the numbers been much
+larger, I would not have been able to do this as easially. For one, because I
+located p and q manually, had	n	been a much larger number, it would
+have taken me a much longer time to figure out what they were, and I 
+would be forced to write a program. In that same way, it would take my program
+a much longer time to find d, increasing the worst case time due to the 
+number of possible values for d increasing with the increase in n.
+
